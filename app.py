@@ -14,8 +14,8 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key')
 
-MAIL_USERNAME = os.getenv('MAIL_USERNAME', '')
-MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', '')
+MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 
 DB_PATH = "database/chatbot.db"
 
