@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up – StudentAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root { --bg:#0d0d0f; --panel:#111114; --border:rgba(255,255,255,0.07); --input-bg:#18181c; --text:#f0f0f0; --muted:#6b6b7a; --cyan:#00c8d4; --cyan-dark:#00a8b5; }
+    body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; display:flex; overflow:hidden; }
+    .left { width:50%; display:flex; flex-direction:column; justify-content:space-between; padding:48px 56px; background:radial-gradient(ellipse at 20% 60%,rgba(0,200,212,0.06) 0%,transparent 60%); }
+    .back-btn { display:inline-flex; align-items:center; gap:8px; color:var(--muted); text-decoration:none; font-size:14px; transition:color 0.2s; }
+    .back-btn:hover { color:var(--text); }
+    .hero-text { flex:1; display:flex; flex-direction:column; justify-content:center; padding-bottom:40px; }
+    .hero-title { font-family:'Playfair Display',serif; font-size:clamp(48px,6vw,80px); line-height:1.0; font-weight:900; letter-spacing:-2px; }
+    .hero-title .line1 { color:#fff; }
+    .hero-title .line1 .accent { color:var(--cyan); }
+    .hero-title .line2 { color:var(--cyan); }
+    .divider-line { width:80px; height:2px; background:linear-gradient(to right,var(--cyan),transparent); margin:24px 0; }
+    .hero-sub { color:var(--muted); font-size:15px; font-weight:300; line-height:1.6; max-width:320px; }
+    .dots { display:flex; gap:8px; }
+    .dot { width:8px; height:8px; border-radius:50%; background:var(--muted); opacity:0.3; }
+    .dot.active { background:var(--cyan); opacity:1; width:24px; border-radius:4px; }
+    .right { width:50%; display:flex; align-items:center; justify-content:center; padding:40px 56px; border-left:1px solid var(--border); background:var(--panel); overflow-y:auto; }
+    .form-box { width:100%; max-width:420px; }
+    .form-box h1 { font-family:'Playfair Display',serif; font-size:30px; font-weight:700; color:#fff; margin-bottom:8px; }
+    .form-box p { color:var(--muted); font-size:14px; margin-bottom:28px; }
+    .flash-msg { padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:16px; }
+    .flash-msg.success { background:rgba(0,200,100,0.1); color:#00c864; border:1px solid rgba(0,200,100,0.2); }
+    .flash-msg.error   { background:rgba(220,50,50,0.1);  color:#f06060; border:1px solid rgba(220,50,50,0.2); }
+    .field { margin-bottom:16px; }
+    .field label { display:block; font-size:11px; font-weight:500; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    .field input { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:13px 16px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s,box-shadow 0.2s; }
+    .field input::placeholder { color:#3a3a46; }
+    .field input:focus { border-color:var(--cyan); box-shadow:0 0 0 3px rgba(0,200,212,0.1); }
+    .btn-primary { width:100%; padding:14px; border:none; border-radius:10px; background:linear-gradient(135deg,var(--cyan),var(--cyan-dark)); color:#000; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 20px rgba(0,200,212,0.3); transition:opacity 0.2s,transform 0.15s; margin-top:8px; }
+    .btn-primary:hover { opacity:0.92; transform:translateY(-1px); }
+    .or-row { display:flex; align-items:center; gap:12px; margin:20px 0; color:var(--muted); font-size:12px; letter-spacing:1px; }
+    .or-row::before,.or-row::after { content:''; flex:1; height:1px; background:var(--border); }
+    .link-row { text-align:center; color:var(--muted); font-size:14px; }
+    .link-row a { color:var(--cyan); text-decoration:none; font-weight:600; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .left  { animation:fadeUp 0.6s ease both; }
+    .right { animation:fadeUp 0.6s ease 0.15s both; }
+    @media (max-width:768px) { body{flex-direction:column;overflow:auto} .left,.right{width:100%;padding:32px} .left{min-height:220px} .right{border-left:none;border-top:1px solid var(--border)} .hero-title{font-size:44px} }
+  </style>
+</head>
+<body>
+  <div class="left">
+    <a href="{{ url_for('login') }}" class="back-btn">← Back</a>
+    <div class="hero-text">
+      <div class="hero-title">
+        <div class="line1">Join<span class="accent"> us</span></div>
+        <div class="line2">Today</div>
+      </div>
+      <div class="divider-line"></div>
+      <p class="hero-sub">Create your account and start your AI-powered learning journey.</p>
+    </div>
+    <div class="dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+  </div>
+  <div class="right">
+    <div class="form-box">
+      <h1>Create your account</h1>
+      <p>Fill in your details — OTP will be sent to your email</p>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="flash-msg {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+      <form method="POST" action="{{ url_for('signup') }}">
+        <div class="field"><label>Username</label><input type="text" name="username" placeholder="choose_a_username" required/></div>
+        <div class="field"><label>Email</label><input type="email" name="email" placeholder="you@example.com" required/></div>
+        <div class="field"><label>Password</label><input type="password" name="password" placeholder="Create a password" required/></div>
+        <div class="field"><label>Confirm Password</label><input type="password" name="confirm_password" placeholder="Repeat your password" required/></div>
+        <button type="submit" class="btn-primary">Send OTP & Continue</button>
+      </form>
+      <div class="or-row">OR</div>
+      <div class="link-row">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></div>
+    </div>
+  </div>
+</body>
+</html>

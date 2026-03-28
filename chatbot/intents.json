@@ -1,0 +1,258 @@
+{
+  "intents": [
+
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hi","hello","hey","good morning","good evening","good afternoon",
+        "what's up","hi there","hey assistant","hello bot",
+        "yo","heyy","hii","helloo","greetings",
+        "how are you","are you there","hey buddy","hello friend"
+      ],
+      "responses": [
+        "Hello! How can I help you today?",
+        "Hi there! What do you need help with?",
+        "Hey! I'm here to assist you.",
+        "Welcome! Ask me anything."
+      ]
+    },
+
+    {
+      "tag": "study_tips",
+      "patterns": [
+        "how to study","best way to study","study tips","how can i focus",
+        "how to learn faster","how to concentrate","study techniques",
+        "how to prepare notes","effective study methods",
+        "how to memorize quickly","how to remember things",
+        "tips for studying better","how to improve learning",
+        "how to avoid distractions while studying",
+        "how to focus on studies","how to stay focused",
+        "study smart tips","how to revise properly",
+        "how to manage study time","study plan ideas"
+      ],
+      "responses": [
+        "Use Pomodoro technique and take short breaks.",
+        "Study in small sessions and revise regularly.",
+        "Avoid distractions and create a proper study environment.",
+        "Practice active recall and spaced repetition."
+      ]
+    },
+
+    {
+      "tag": "exam_preparation",
+      "patterns": [
+        "how to prepare for exam","exam preparation tips",
+        "how to score good marks","last day preparation",
+        "how to pass exam","how to top in exams",
+        "exam strategy","how to revise before exam",
+        "important exam tips","how to manage time in exam",
+        "what to do before exam","night before exam tips",
+        "how to reduce exam stress","how to revise fast"
+      ],
+      "responses": [
+        "Focus on important topics and revise key concepts.",
+        "Solve previous year papers and practice questions.",
+        "Stay calm and manage your time effectively during exam."
+      ]
+    },
+
+    {
+      "tag": "motivation",
+      "patterns": [
+        "i feel lazy","no motivation","i am tired of studying",
+        "i feel demotivated","how to stay motivated",
+        "i dont feel like studying","i feel bored",
+        "how to stay consistent","how to avoid procrastination",
+        "i keep delaying work","i am not productive",
+        "how to improve productivity","how to push myself"
+      ],
+      "responses": [
+        "Start with small tasks and build momentum.",
+        "Think about your long-term goals.",
+        "Take a break and restart with fresh energy.",
+        "Discipline is more important than motivation."
+      ]
+    },
+
+    {
+      "tag": "time_management",
+      "patterns": [
+        "how to manage time","time management tips",
+        "how to make schedule","daily routine for study",
+        "how to plan my day","how to balance study and life",
+        "how to organize tasks","how to prioritize work",
+        "how to avoid wasting time","how to stay productive"
+      ],
+      "responses": [
+        "Create a daily plan and prioritize tasks.",
+        "Use time blocks for focused work.",
+        "Avoid distractions and stick to your schedule."
+      ]
+    },
+
+    {
+      "tag": "stress",
+      "patterns": [
+        "i am stressed","exam stress","feeling pressure",
+        "anxiety about exams","study stress",
+        "i feel overwhelmed","too much pressure",
+        "i am nervous","i am worried about exam",
+        "how to reduce stress","how to relax mind"
+      ],
+      "responses": [
+        "Take deep breaths and relax.",
+        "Break your tasks into smaller steps.",
+        "Go for a short walk or talk to someone."
+      ]
+    },
+
+    {
+      "tag": "career_guidance",
+      "patterns": [
+        "career advice","what career should i choose",
+        "which field is best","future career options",
+        "what should i do after graduation",
+        "best career for engineers",
+        "which job is best for me",
+        "how to choose career path",
+        "career options after engineering",
+        "high paying careers"
+      ],
+      "responses": [
+        "Choose a career based on your interest and skills.",
+        "Explore fields like AI, Data Science, and Cybersecurity.",
+        "Gain practical experience through projects."
+      ]
+    },
+
+    {
+      "tag": "placement_preparation",
+      "patterns": [
+        "placement preparation","how to prepare for placement",
+        "campus placement tips","how to get job",
+        "placement strategy","how to crack placement",
+        "company interview preparation",
+        "how to prepare aptitude",
+        "placement preparation roadmap",
+        "how to get placed in company"
+      ],
+      "responses": [
+        "Focus on aptitude, coding, and communication.",
+        "Practice mock interviews regularly.",
+        "Work on strong projects and resume."
+      ]
+    },
+
+    {
+      "tag": "resume",
+      "patterns": [
+        "resume tips","how to make resume",
+        "what to include in resume","resume format",
+        "how to write cv","best resume format",
+        "resume for freshers","resume examples",
+        "how to improve resume"
+      ],
+      "responses": [
+        "Keep your resume clear and concise.",
+        "Highlight projects and skills.",
+        "Use bullet points and avoid unnecessary details."
+      ]
+    },
+
+    {
+      "tag": "interview",
+      "patterns": [
+        "interview tips","how to crack interview",
+        "technical interview questions",
+        "hr interview preparation",
+        "common interview questions",
+        "how to answer interview questions",
+        "how to prepare for interview",
+        "how to be confident in interview"
+      ],
+      "responses": [
+        "Practice common questions and answers.",
+        "Be confident and honest.",
+        "Revise core subjects before interview."
+      ]
+    },
+
+    {
+      "tag": "coding",
+      "patterns": [
+        "how to improve coding","coding practice",
+        "learn programming","how to learn coding",
+        "best platform for coding",
+        "coding for beginners",
+        "how to learn python",
+        "data structures learning",
+        "how to solve coding problems"
+      ],
+      "responses": [
+        "Practice daily on coding platforms.",
+        "Focus on problem-solving and logic.",
+        "Learn data structures and algorithms."
+      ]
+    },
+
+    {
+      "tag": "skills",
+      "patterns": [
+        "important skills","skills for job",
+        "what skills should i learn",
+        "skills for students",
+        "technical skills list",
+        "soft skills importance",
+        "skills for placement",
+        "skills to improve"
+      ],
+      "responses": [
+        "Learn coding, communication, and problem-solving.",
+        "Focus on both technical and soft skills.",
+        "Build projects to showcase your skills."
+      ]
+    },
+
+    {
+      "tag": "projects",
+      "patterns": [
+        "project ideas","final year project ideas",
+        "what project should i make",
+        "ai project ideas","web project ideas",
+        "iot project ideas",
+        "innovative project ideas",
+        "student project ideas"
+      ],
+      "responses": [
+        "Build real-world problem-solving projects.",
+        "Use AI, Web, or IoT technologies.",
+        "Focus on innovation and usability."
+      ]
+    },
+
+    {
+      "tag": "thanks",
+      "patterns": [
+        "thanks","thank you","thanks a lot","appreciate it","thx"
+      ],
+      "responses": [
+        "You're welcome!",
+        "Happy to help!",
+        "Anytime!"
+      ]
+    },
+
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye","goodbye","see you","exit","talk later"
+      ],
+      "responses": [
+        "Goodbye! Best of luck.",
+        "See you soon!",
+        "Take care!"
+      ]
+    }
+
+  ]
+}
