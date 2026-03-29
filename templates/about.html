@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About – StudentAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}"/>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0a0a0f; --surface:#111118; --surface2:#16161f;
+      --border:rgba(255,255,255,0.07); --text:#f0f0f0; --muted:rgba(255,255,255,0.4);
+      --blue:#4da6ff; --blue-glow:rgba(77,166,255,0.3); --blue-dim:rgba(77,166,255,0.1);
+      --cyan:#00c8d4;
+    }
+    html, body { min-height:100%; background:var(--bg); color:var(--text); font-family:'Sora',sans-serif; }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:18px 48px;
+      background:rgba(10,10,15,0.85); backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo-wrap { position:relative; }
+    .nav-logo { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; cursor:pointer; user-select:none; }
+    .nav-logo span { color:var(--blue); }
+    .nav-dropdown {
+      position:absolute; top:calc(100% + 12px); left:0;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:12px; padding:8px; min-width:180px;
+      opacity:0; pointer-events:none; transform:translateY(-6px);
+      transition:opacity 0.2s,transform 0.2s;
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    }
+    .nav-logo-wrap:hover .nav-dropdown { opacity:1; pointer-events:all; transform:translateY(0); }
+    .dropdown-item {
+      display:flex; align-items:center; gap:10px;
+      padding:10px 14px; border-radius:8px;
+      font-size:13px; color:var(--muted); text-decoration:none;
+      transition:background 0.15s,color 0.15s;
+    }
+    .dropdown-item:hover { background:var(--surface2); color:var(--text); }
+    .dropdown-item svg { width:15px; height:15px; opacity:0.6; }
+    .dropdown-divider { height:1px; background:var(--border); margin:6px 0; }
+    .nav-actions { display:flex; gap:12px; align-items:center; }
+    .btn-ghost { background:transparent; border:1px solid var(--border); color:var(--muted); padding:9px 22px; border-radius:9px; font-family:'Sora',sans-serif; font-size:13px; cursor:pointer; text-decoration:none; transition:border-color 0.2s,color 0.2s,background 0.2s; }
+    .btn-ghost:hover { border-color:var(--blue); color:var(--text); background:var(--blue-dim); }
+    .btn-blue { background:linear-gradient(135deg,var(--blue),#2979cc); border:none; color:#fff; padding:9px 22px; border-radius:9px; font-family:'Sora',sans-serif; font-size:13px; font-weight:600; cursor:pointer; text-decoration:none; box-shadow:0 2px 16px var(--blue-glow); transition:opacity 0.2s,transform 0.15s; }
+    .btn-blue:hover { opacity:0.88; transform:translateY(-1px); }
+
+    /* ── PAGE ── */
+    .page { max-width:900px; margin:0 auto; padding:120px 32px 80px; }
+
+    /* ── HERO ── */
+    .about-hero { text-align:center; margin-bottom:80px; animation:fadeUp 0.6s ease both; }
+    .version-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--blue-dim); border:1px solid rgba(77,166,255,0.25);
+      border-radius:50px; padding:6px 18px; font-size:12px;
+      color:var(--blue); font-weight:600; letter-spacing:0.5px; margin-bottom:24px;
+    }
+    .badge-dot { width:7px; height:7px; border-radius:50%; background:var(--blue); animation:blink-dot 2s ease infinite; }
+    @keyframes blink-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .about-hero h1 { font-family:'Playfair Display',serif; font-size:clamp(40px,6vw,68px); font-weight:900; letter-spacing:-2px; line-height:1.05; margin-bottom:20px; }
+    .about-hero h1 span { color:var(--blue); }
+    .about-hero p { font-size:16px; color:var(--muted); max-width:580px; margin:0 auto; line-height:1.8; font-weight:300; }
+
+    /* ── DIVIDER ── */
+    .divider { width:60px; height:2px; background:linear-gradient(to right,var(--cyan),transparent); margin:0 auto 64px; }
+
+    /* ── SECTION LABEL ── */
+    .section-label { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--blue); margin-bottom:12px; }
+    .section-title { font-family:'Playfair Display',serif; font-size:clamp(24px,3vw,36px); font-weight:700; margin-bottom:32px; letter-spacing:-0.5px; }
+
+    /* ── VERSION CARD ── */
+    .version-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:20px; padding:36px 40px; margin-bottom:24px;
+      animation:fadeUp 0.6s ease 0.1s both;
+      position:relative; overflow:hidden;
+    }
+    .version-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(to right,var(--blue),var(--cyan),transparent);
+    }
+    .version-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+    .version-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; }
+    .version-tag { background:rgba(0,200,212,0.1); border:1px solid rgba(0,200,212,0.25); color:var(--cyan); font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:4px 12px; border-radius:50px; }
+    .version-date { font-size:12px; color:var(--muted); margin-bottom:20px; }
+    .version-desc { font-size:14px; color:var(--muted); line-height:1.8; margin-bottom:28px; }
+
+    /* ── CHANGELOG LIST ── */
+    .changelog { display:flex; flex-direction:column; gap:10px; }
+    .changelog-item { display:flex; align-items:flex-start; gap:12px; }
+    .changelog-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+    .changelog-dot.new     { background:var(--blue); }
+    .changelog-dot.improved{ background:var(--cyan); }
+    .changelog-dot.fixed   { background:#7ed96b; }
+    .changelog-text { font-size:13px; color:var(--muted); line-height:1.6; }
+    .changelog-text strong { color:var(--text); font-weight:600; }
+    .tag-new      { background:rgba(77,166,255,0.1);  color:var(--blue); font-size:10px; font-weight:700; letter-spacing:0.8px; padding:2px 8px; border-radius:4px; text-transform:uppercase; margin-right:6px; }
+    .tag-improved { background:rgba(0,200,212,0.1);   color:var(--cyan); font-size:10px; font-weight:700; letter-spacing:0.8px; padding:2px 8px; border-radius:4px; text-transform:uppercase; margin-right:6px; }
+    .tag-fixed    { background:rgba(126,217,107,0.1); color:#7ed96b;     font-size:10px; font-weight:700; letter-spacing:0.8px; padding:2px 8px; border-radius:4px; text-transform:uppercase; margin-right:6px; }
+
+    /* ── TECH STACK ── */
+    .tech-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:64px; animation:fadeUp 0.6s ease 0.2s both; }
+    .tech-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; display:flex; align-items:center; gap:14px; transition:border-color 0.2s,transform 0.2s; }
+    .tech-card:hover { border-color:rgba(77,166,255,0.3); transform:translateY(-3px); }
+    .tech-icon { width:38px; height:38px; border-radius:10px; background:var(--blue-dim); border:1px solid rgba(77,166,255,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px; }
+    .tech-info { display:flex; flex-direction:column; gap:2px; }
+    .tech-name { font-size:13px; font-weight:600; color:var(--text); }
+    .tech-desc { font-size:11px; color:var(--muted); }
+
+    /* ── ROADMAP ── */
+    .roadmap { margin-bottom:64px; animation:fadeUp 0.6s ease 0.3s both; }
+    .roadmap-list { display:flex; flex-direction:column; gap:12px; }
+    .roadmap-item { display:flex; align-items:center; gap:16px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 20px; transition:border-color 0.2s; }
+    .roadmap-item:hover { border-color:rgba(77,166,255,0.2); }
+    .roadmap-status { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .roadmap-status.done    { background:#7ed96b; box-shadow:0 0 8px rgba(126,217,107,0.4); }
+    .roadmap-status.planned { background:var(--muted); opacity:0.5; }
+    .roadmap-status.soon    { background:var(--cyan); box-shadow:0 0 8px rgba(0,200,212,0.4); }
+    .roadmap-text { font-size:13px; color:var(--muted); flex:1; }
+    .roadmap-text strong { color:var(--text); }
+    .roadmap-label { font-size:10px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; padding:3px 10px; border-radius:4px; }
+    .roadmap-label.done    { background:rgba(126,217,107,0.1); color:#7ed96b; }
+    .roadmap-label.soon    { background:rgba(0,200,212,0.1);   color:var(--cyan); }
+    .roadmap-label.planned { background:rgba(255,255,255,0.05); color:var(--muted); }
+
+    /* ── FOOTER ── */
+    footer { padding:32px; text-align:center; border-top:1px solid var(--border); font-size:12px; color:var(--muted); margin-top:40px; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo-wrap">
+      <div class="nav-logo">Student<span>AI</span></div>
+      <div class="nav-dropdown">
+        <div class="dropdown-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          Academic Assistant
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="{{ url_for('about') }}" class="dropdown-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          About
+        </a>
+        <a href="{{ url_for('home') }}#features" class="dropdown-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Features
+        </a>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="{{ url_for('login') }}" class="btn-ghost">Sign In</a>
+      <a href="{{ url_for('signup') }}" class="btn-blue">Get Started</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- HERO -->
+    <div class="about-hero">
+      <div class="version-badge">
+        <div class="badge-dot"></div>
+        Version 1.0 — Stable Release
+      </div>
+      <h1>About <span>StudentAI</span></h1>
+      <p>An AI-powered academic assistant built to make learning faster, clearer, and more accessible for every student — anywhere, anytime.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- VERSION CHANGELOG -->
+    <div style="margin-bottom:64px; animation:fadeUp 0.6s ease 0.1s both;">
+      <div class="section-label">Release Notes</div>
+      <div class="section-title">What's new in v1.0</div>
+
+      <div class="version-card">
+        <div class="version-header">
+          <div class="version-title">Version 1.0 — Initial Release</div>
+          <div class="version-tag">Stable</div>
+        </div>
+        <div class="version-date">Released 2025 · First public version</div>
+        <div class="version-desc">
+          The first stable release of StudentAI. This version establishes the core platform —
+          AI-powered academic Q&A, secure user authentication with email OTP, voice input and output,
+          a live audio visualizer, and a clean dark UI designed for long study sessions.
+        </div>
+
+        <div class="changelog">
+          <div class="changelog-item">
+            <div class="changelog-dot new"></div>
+            <div class="changelog-text"><span class="tag-new">New</span><strong>Groq LLaMA 3.1 Integration</strong> — Ultra-fast academic answers powered by LLaMA 3.1-8b-instant with a custom student-focused system prompt</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot new"></div>
+            <div class="changelog-text"><span class="tag-new">New</span><strong>Email OTP Authentication</strong> — Secure signup and password reset verified through Gmail OTP with 10-minute expiry</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot new"></div>
+            <div class="changelog-text"><span class="tag-new">New</span><strong>Voice Input</strong> — Speak questions directly using your browser's Speech Recognition API with live word highlighting</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot new"></div>
+            <div class="changelog-text"><span class="tag-new">New</span><strong>Text-to-Speech Output</strong> — AI responses are spoken aloud with the audio visualizer reacting in real time</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot new"></div>
+            <div class="changelog-text"><span class="tag-new">New</span><strong>Live Audio Visualizer</strong> — Animated bar visualizer that pulses when the AI speaks, idle when silent</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot new"></div>
+            <div class="changelog-text"><span class="tag-new">New</span><strong>Chat History</strong> — Full conversation history with user and AI bubbles saved to SQLite database per session</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot new"></div>
+            <div class="changelog-text"><span class="tag-new">New</span><strong>Dark UI Design System</strong> — Consistent dark theme across all pages — login, signup, OTP verify, forgot password, chat, home, about</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot new"></div>
+            <div class="changelog-text"><span class="tag-new">New</span><strong>Small Talk Handler</strong> — Instant replies for greetings without wasting API calls</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot improved"></div>
+            <div class="changelog-text"><span class="tag-improved">Improved</span><strong>Session Security</strong> — SHA-256 hashed passwords, Flask session protection, unauthorized request blocking</div>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-dot fixed"></div>
+            <div class="changelog-text"><span class="tag-fixed">Fixed</span><strong>Transcript Overflow</strong> — Scrollable transcript area prevents long AI responses from overflowing the screen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TECH STACK -->
+    <div style="margin-bottom:16px;">
+      <div class="section-label">Tech Stack</div>
+      <div class="section-title">Built with</div>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-icon">🐍</div>
+        <div class="tech-info"><div class="tech-name">Python + Flask</div><div class="tech-desc">Backend & routing</div></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">⚡</div>
+        <div class="tech-info"><div class="tech-name">Groq API</div><div class="tech-desc">LLaMA 3.1 inference</div></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🗄️</div>
+        <div class="tech-info"><div class="tech-name">SQLite</div><div class="tech-desc">User & message storage</div></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">📧</div>
+        <div class="tech-info"><div class="tech-name">Gmail SMTP</div><div class="tech-desc">OTP email delivery</div></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🎙️</div>
+        <div class="tech-info"><div class="tech-name">Web Speech API</div><div class="tech-desc">Voice input & TTS</div></div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🎨</div>
+        <div class="tech-info"><div class="tech-name">HTML / CSS / JS</div><div class="tech-desc">Frontend & animations</div></div>
+      </div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div class="roadmap">
+      <div class="section-label">Roadmap</div>
+      <div class="section-title">What's coming next</div>
+      <div class="roadmap-list">
+        <div class="roadmap-item">
+          <div class="roadmap-status done"></div>
+          <div class="roadmap-text"><strong>Core AI Q&A</strong> — Academic answers via Groq LLaMA</div>
+          <div class="roadmap-label done">Done</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status done"></div>
+          <div class="roadmap-text"><strong>Email OTP Auth</strong> — Secure signup and password reset</div>
+          <div class="roadmap-label done">Done</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status done"></div>
+          <div class="roadmap-text"><strong>Voice Input + TTS</strong> — Speak and listen to answers</div>
+          <div class="roadmap-label done">Done</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status soon"></div>
+          <div class="roadmap-text"><strong>Chat History Persistence</strong> — View past conversations across sessions</div>
+          <div class="roadmap-label soon">Coming Soon</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status soon"></div>
+          <div class="roadmap-text"><strong>Subject Mode Selector</strong> — Switch between Math, Science, History modes for tailored answers</div>
+          <div class="roadmap-label soon">Coming Soon</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status planned"></div>
+          <div class="roadmap-text"><strong>PDF & Document Upload</strong> — Ask questions about your own study material</div>
+          <div class="roadmap-label planned">Planned</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status planned"></div>
+          <div class="roadmap-text"><strong>Quiz Generator</strong> — Auto-generate practice questions from any topic</div>
+          <div class="roadmap-label planned">Planned</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status planned"></div>
+          <div class="roadmap-text"><strong>Mobile App</strong> — Native iOS and Android version</div>
+          <div class="roadmap-label planned">Planned</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    © 2025 StudentAI · Version 1.0 · Built with Flask &amp; Groq
+  </footer>
+
+</body>
+</html>
