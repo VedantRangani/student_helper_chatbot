@@ -17,7 +17,8 @@ app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key')
 MAIL_USERNAME = os.getenv("MAIL_USERNAME")
 MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 
-DB_PATH = "database/chatbot.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "database", "chatbot.db")
 
 # ════════════════════════════════════════════════
 #  DB HELPERS
@@ -30,6 +31,25 @@ def get_db():
 
 def hash_password(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
+
+def init_db():
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    db = get_db()
+    db.execute('''CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    )''')
+    db.execute('''CREATE TABLE IF NOT EXISTS messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sender TEXT NOT NULL,
+        message TEXT NOT NULL
+    )''')
+    db.commit()
+    db.close()
+
+init_db()  # Call it here
 
 # ════════════════════════════════════════════════
 #  OTP HELPERS
