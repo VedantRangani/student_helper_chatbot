@@ -18,7 +18,7 @@ MAIL_USERNAME = os.getenv("MAIL_USERNAME")
 MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "database", "chatbot.db")
+DB_PATH = os.path.join('/tmp', "chatbot.db")
 
 # ════════════════════════════════════════════════
 #  DB HELPERS
