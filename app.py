@@ -49,7 +49,10 @@ def init_db():
     db.commit()
     db.close()
 
-init_db()  # Call it here
+try:
+    init_db()
+except Exception as e:
+    print(f"[DB] Warning: Could not initialize database: {e}")
 
 # ════════════════════════════════════════════════
 #  OTP HELPERS
