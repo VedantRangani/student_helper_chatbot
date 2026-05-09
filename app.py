@@ -14,11 +14,11 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key')
 
-MAIL_USERNAME = os.getenv("MAIL_USERNAME")
-MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+MAIL_USERNAME = os.getenv('MAIL_USERNAME', '')
+MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', '')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join('/tmp', "chatbot.db")
+DB_PATH  = os.path.join(BASE_DIR, "database", "chatbot.db")
 
 # ════════════════════════════════════════════════
 #  DB HELPERS
@@ -31,28 +31,6 @@ def get_db():
 
 def hash_password(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
-
-def init_db():
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    db = get_db()
-    db.execute('''CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
-    )''')
-    db.execute('''CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        sender TEXT NOT NULL,
-        message TEXT NOT NULL
-    )''')
-    db.commit()
-    db.close()
-
-try:
-    init_db()
-except Exception as e:
-    print(f"[DB] Warning: Could not initialize database: {e}")
 
 # ════════════════════════════════════════════════
 #  OTP HELPERS
@@ -69,13 +47,26 @@ def send_email_otp(to_email, otp):
         msg['To']      = to_email
 
         html = f"""
-        <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;background:#0a0a0f;color:#f0f0f0;border-radius:16px;padding:40px;border:1px solid rgba(255,255,255,0.1);">
-          <h2 style="font-family:Georgia,serif;color:#4da6ff;margin-bottom:8px;">StudentAI</h2>
-          <p style="color:rgba(255,255,255,0.5);margin-bottom:32px;font-size:14px;">Your verification code</p>
-          <div style="background:#16161f;border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(77,166,255,0.2);margin-bottom:24px;">
-            <span style="font-size:42px;font-weight:900;letter-spacing:12px;color:#4da6ff;">{otp}</span>
+        <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;
+                    background:#0a0a0f;color:#f0f0f0;border-radius:16px;
+                    padding:40px;border:1px solid rgba(255,255,255,0.1);">
+          <h2 style="font-family:Georgia,serif;color:#4da6ff;margin-bottom:8px;">
+            StudentAI
+          </h2>
+          <p style="color:rgba(255,255,255,0.5);margin-bottom:32px;font-size:14px;">
+            Your verification code
+          </p>
+          <div style="background:#16161f;border-radius:12px;padding:24px;
+                      text-align:center;border:1px solid rgba(77,166,255,0.2);
+                      margin-bottom:24px;">
+            <span style="font-size:42px;font-weight:900;letter-spacing:12px;
+                         color:#4da6ff;">{otp}</span>
           </div>
-          <p style="color:rgba(255,255,255,0.4);font-size:13px;">This code expires in <strong style="color:#f0f0f0;">10 minutes</strong>. Do not share it with anyone.</p>
+          <p style="color:rgba(255,255,255,0.4);font-size:13px;">
+            This code expires in
+            <strong style="color:#f0f0f0;">10 minutes</strong>.
+            Do not share it with anyone.
+          </p>
         </div>
         """
         msg.attach(MIMEText(html, 'html'))
@@ -83,8 +74,10 @@ def send_email_otp(to_email, otp):
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(MAIL_USERNAME, MAIL_PASSWORD)
             server.sendmail(MAIL_USERNAME, to_email, msg.as_string())
+
         print(f"[Email] OTP sent to {to_email}")
         return True
+
     except Exception as e:
         print(f"[Email] Error: {e}")
         return False
@@ -100,12 +93,20 @@ except ImportError:
         return f"Echo: {msg}  [chatbot model not loaded]"
 
 # ════════════════════════════════════════════════
-#  ROUTES
+#  ROUTES — PUBLIC
 # ════════════════════════════════════════════════
 
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+# ════════════════════════════════════════════════
+#  ROUTES — CHAT (protected)
+# ════════════════════════════════════════════════
 
 @app.route('/app')
 def index():
@@ -113,7 +114,10 @@ def index():
         return redirect(url_for('login'))
     return render_template('index.html', username=session['username'])
 
-# ── SIGNUP ──
+# ════════════════════════════════════════════════
+#  ROUTES — SIGNUP
+# ════════════════════════════════════════════════
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -125,6 +129,7 @@ def signup():
         if not all([username, email, password, confirm]):
             flash('Please fill in all fields.', 'error')
             return render_template('signup.html')
+
         if password != confirm:
             flash('Passwords do not match.', 'error')
             return render_template('signup.html')
@@ -135,6 +140,7 @@ def signup():
             (username, email)
         ).fetchone()
         db.close()
+
         if existing:
             flash('Username or email already taken.', 'error')
             return render_template('signup.html')
@@ -191,37 +197,49 @@ def verify_signup_otp():
             db.close()
             flash('Account created! Please sign in.', 'success')
             return redirect(url_for('login'))
+
         except sqlite3.IntegrityError:
             flash('Username or email already taken.', 'error')
             return redirect(url_for('signup'))
 
     return render_template('verify_otp.html', action='signup')
 
-# ── LOGIN ──
+# ════════════════════════════════════════════════
+#  ROUTES — LOGIN
+# ════════════════════════════════════════════════
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if 'username' in session:
         return redirect(url_for('index'))
+
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
+
         if not username or not password:
             flash('Please fill in all fields.', 'error')
             return render_template('login.html')
+
         db = get_db()
         user = db.execute(
             "SELECT * FROM users WHERE username=? AND password=?",
             (username, hash_password(password))
         ).fetchone()
         db.close()
+
         if user:
             session['username'] = username
             return redirect(url_for('index'))
         else:
             flash('Invalid username or password.', 'error')
+
     return render_template('login.html')
 
-# ── FORGOT PASSWORD ──
+# ════════════════════════════════════════════════
+#  ROUTES — FORGOT PASSWORD
+# ════════════════════════════════════════════════
+
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
@@ -293,6 +311,7 @@ def reset_password():
         if not password or not confirm:
             flash('Please fill in both fields.', 'error')
             return render_template('reset_password.html')
+
         if password != confirm:
             flash('Passwords do not match.', 'error')
             return render_template('reset_password.html')
@@ -314,33 +333,52 @@ def reset_password():
 
     return render_template('reset_password.html')
 
-# ── LOGOUT + CHAT ──
+# ════════════════════════════════════════════════
+#  ROUTES — LOGOUT
+# ════════════════════════════════════════════════
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('home'))
 
+# ════════════════════════════════════════════════
+#  ROUTES — CHAT API
+# ════════════════════════════════════════════════
+
 @app.route('/chat', methods=['POST'])
 def chat():
     if 'username' not in session:
         return jsonify({"error": "Unauthorized"}), 401
-    user_message = request.json.get('message', '')
-    mode = request.json.get('mode', 'student')
+
+    user_message = request.json.get('message', '').strip()
+    mode         = request.json.get('mode', 'student')
+
+    if not user_message:
+        return jsonify({"reply": "Please type or say something!"})
+
     reply = chatbot_response(user_message, mode)
+
     try:
         db = get_db()
-        db.execute("INSERT INTO messages (sender, message) VALUES (?,?)", ('user', user_message))
-        db.execute("INSERT INTO messages (sender, message) VALUES (?,?)", ('bot', reply))
+        db.execute(
+            "INSERT INTO messages (sender, message) VALUES (?,?)",
+            ('user', user_message)
+        )
+        db.execute(
+            "INSERT INTO messages (sender, message) VALUES (?,?)",
+            ('bot', reply)
+        )
         db.commit()
         db.close()
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[DB] Write error: {e}")
+
     return jsonify({"reply": reply})
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
+# ════════════════════════════════════════════════
+#  RUN
+# ════════════════════════════════════════════════
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
